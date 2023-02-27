@@ -21,12 +21,9 @@ def get_packages(folder_path):
 @main.route('/api')
 def return_packages():
     folder_path = request.args.get('folder_path')
-    print(folder_path)
     packages = {}
     for root, dirs, files in os.walk(folder_path):
         packages.update(get_packages(folder_path))
-
-    print(packages)
 
     res = [{'package_name': name, 'package_version': version}
            for name, version in packages.items()]
