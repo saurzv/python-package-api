@@ -10,7 +10,15 @@ def get_packages(folder_path):
     if os.path.exists(requirement_file):
         with open(requirement_file, 'r') as f:
             for package in f.readlines():
-                name, version = package.split('==')
+                if len(package.split('==')) == 2:
+                    name, version = package.split('==')
+                else:
+                    name = package.strip()
+                    version = ' '
+
+                if name == '' or name[0] == '#':
+                    continue
+
                 version = version[:-1]
                 packages[name] = version
         return packages
@@ -23,7 +31,7 @@ def return_packages():
     folder_path = request.args.get('folder_path')
     packages = {}
     for root, dirs, files in os.walk(folder_path):
-        packages.update(get_packages(folder_path))
+        packages.update(get_packages(root))
 
     res = [{'package_name': name, 'package_version': version}
            for name, version in packages.items()]
